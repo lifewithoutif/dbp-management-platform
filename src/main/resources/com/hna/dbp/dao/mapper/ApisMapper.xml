@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" > 
+<mapper namespace="com.hna.dbp.dao.mapper.ApisMapper">
+<resultMap id="apis" type="com.hna.dbp.dao.entity.Apis">
+	<result property="id" column="id"/>
+	<result property="path" column="path"/>
+	<result property="serviceId" column="service_id"/>
+	<result property="url" column="url"/>
+	<result property="retryable" column="retryable"/>
+	<result property="enabled" column="enabled"/>
+	<result property="stripPrefix" column="strip_prefix"/>
+	<result property="apiName" column="api_name"/>
+	<result property="createOn" column="create_on"/>
+	<result property="deleteMark" column="delete_mark"/>
+	<result property="status" column="status"/>
+</resultMap>
+<insert id="insertApis" parameterType="com.hna.dbp.dao.entity.Apis">
+insert into apis
+(	id,
+	path,
+	service_id,
+	url,
+	retryable,
+	enabled,
+	strip_prefix,
+	api_name,
+	create_on,
+	delete_mark,
+	status
+)values(
+	#{id},
+	#{path},
+	#{serviceId},
+	#{url},
+	#{retryable},
+	#{enabled},
+	#{stripPrefix},
+	#{apiName},
+	#{createOn},
+	#{deleteMark},
+	#{status}
+)
+</insert>
+<delete id="deleteApisById">
+	delete from apis
+	where id=#{id}
+</delete>
+<update id="markApisAsDeleted">
+	update apis set delete_mark = 1 
+	where id=#{id}
+</update>
+<select id="findApisById" resultMap="apis">
+	select * from apis
+	where id=#{id}
+</select>
+<select id="findApisList" resultMap="apis">
+	select * from apis
+</select>
+<update id="updateApis" parameterType="com.hna.dbp.dao.entity.Apis">
+update apis
+<set>
+	id=#{id},
+	path=#{path},
+	service_id=#{serviceId},
+	url=#{url},
+	retryable=#{retryable},
+	enabled=#{enabled},
+	strip_prefix=#{stripPrefix},
+	api_name=#{apiName},
+	create_on=#{createOn},
+	delete_mark=#{deleteMark},
+	status=#{status}
+</set>
+<where>	
+id=#{id}	
+</where>	
+</update>
+<update id="updateSensitiveApis" parameterType="com.hna.dbp.dao.entity.Apis">
+update apis
+<set>
+	<if test="id!=null"> 
+		id=#{id},
+	</if>
+	<if test="path!=null"> 
+		path=#{path},
+	</if>
+	<if test="serviceId!=null"> 
+		service_id=#{serviceId},
+	</if>
+	<if test="url!=null"> 
+		url=#{url},
+	</if>
+	<if test="retryable!=null"> 
+		retryable=#{retryable},
+	</if>
+	<if test="enabled!=null"> 
+		enabled=#{enabled},
+	</if>
+	<if test="stripPrefix!=null"> 
+		strip_prefix=#{stripPrefix},
+	</if>
+	<if test="apiName!=null"> 
+		api_name=#{apiName},
+	</if>
+	<if test="createOn!=null"> 
+		create_on=#{createOn},
+	</if>
+	<if test="deleteMark!=null"> 
+		delete_mark=#{deleteMark},
+	</if>
+	<if test="status!=null"> 
+		status=#{status}
+	</if>
+</set>
+<where>	
+id=#{id}	
+</where>	
+</update>
+<delete id="deleteApisListByIds" parameterType ="java.lang.String">
+	delete from apis
+	where id in
+	<foreach item="idItem" collection="array" open="(" separator="," close=")">#{idItem}</foreach>
+</delete>
+<update id="markApisArrayAsDeleted" parameterType ="java.lang.String">
+	update apis set delete_mark = 1 
+	where id in
+	<foreach item="idItem" collection="array" open="(" separator="," close=")">#{idItem}</foreach>
+</update>
+<insert id="insertApisList" parameterType="java.util.List">
+insert into apis
+(	id,
+	path,
+	service_id,
+	url,
+	retryable,
+	enabled,
+	strip_prefix,
+	api_name,
+	create_on,
+	delete_mark,
+	status
+)values<foreach collection="list" item="item" index= "index" separator="," >
+(	#{item.id},
+	#{item.path},
+	#{item.serviceId},
+	#{item.url},
+	#{item.retryable},
+	#{item.enabled},
+	#{item.stripPrefix},
+	#{item.apiName},
+	#{item.createOn},
+	#{item.deleteMark},
+	#{item.status}
+)</foreach>
+</insert>
+<update id="updateApisList" parameterType="java.util.List">
+<foreach collection="list" item="item" index= "index" separator=";" >
+update apis
+set
+	id=#{item.id},
+	path=#{item.path},
+	service_id=#{item.serviceId},
+	url=#{item.url},
+	retryable=#{item.retryable},
+	enabled=#{item.enabled},
+	strip_prefix=#{item.stripPrefix},
+	api_name=#{item.apiName},
+	create_on=#{item.createOn},
+	delete_mark=#{item.deleteMark},
+	status=#{item.status}
+
+where	
+id=#{item.id}	
+</foreach>
+</update>
+<select id="findApisQuery" resultMap="apis">
+	select * from apis
+	<where>
+	 <if test="id!=null and id!=''"> 
+		AND id=#{id}
+	</if>
+	 <if test="path!=null and path!=''"> 
+		AND path=#{path}
+	</if>
+	 <if test="serviceId!=null and serviceId!=''"> 
+		AND service_id=#{serviceId}
+	</if>
+	 <if test="url!=null and url!=''"> 
+		AND url=#{url}
+	</if>
+	 <if test="retryable!=null "> 
+		AND retryable=#{retryable}
+	</if>
+	 <if test="enabled!=null "> 
+		AND enabled=#{enabled}
+	</if>
+	 <if test="stripPrefix!=null and stripPrefix!=''"> 
+		AND strip_prefix=#{stripPrefix}
+	</if>
+	 <if test="apiName!=null and apiName!=''"> 
+		AND api_name=#{apiName}
+	</if>
+	 <if test="createOn!=null and createOn!=''"> 
+		AND create_on=#{createOn}
+	</if>
+	 <if test="deleteMark!=null "> 
+		AND delete_mark=#{deleteMark}
+	</if>
+	 <if test="status!=null "> 
+		AND status=#{status}
+	</if>
+</where>
+	</select>
+<select id="findApisQueryPage" resultMap="apis">
+	select * from apis
+	<where>
+	 <if test="obj.id!=null and obj.id!=''"> 
+		AND id=#{obj.id}
+	</if>
+	 <if test="obj.path!=null and obj.path!=''"> 
+		AND path=#{obj.path}
+	</if>
+	 <if test="obj.serviceId!=null and obj.serviceId!=''"> 
+		AND service_id=#{obj.serviceId}
+	</if>
+	 <if test="obj.url!=null and obj.url!=''"> 
+		AND url=#{obj.url}
+	</if>
+	 <if test="obj.retryable!=null "> 
+		AND retryable=#{obj.retryable}
+	</if>
+	 <if test="obj.enabled!=null "> 
+		AND enabled=#{obj.enabled}
+	</if>
+	 <if test="obj.stripPrefix!=null "> 
+		AND strip_prefix=#{obj.stripPrefix}
+	</if>
+	 <if test="obj.apiName!=null and obj.apiName!=''"> 
+		AND api_name=#{obj.apiName}
+	</if>
+	 <if test="obj.createOn!=null and obj.createOn!=''"> 
+		AND create_on=#{obj.createOn}
+	</if>
+	 <if test="obj.deleteMark!=null "> 
+		AND delete_mark=#{obj.deleteMark}
+	</if>
+	 <if test="obj.status!=null "> 
+		AND status=#{obj.status}
+	</if>
+</where>
+		limit #{startIndex},#{limit}
+
+</select>
+
+	<select id="findApisQueryPageNew" resultMap="apis">
+		select * from apis limit #{startIndex},#{limit}
+	</select>
+
+<select id="findCountApisQuery" resultType="java.lang.Integer">
+	select count(*) from apis
+	<where>
+	 <if test="id!=null and id!=''"> 
+		AND id=#{id}
+	</if>
+	 <if test="path!=null and path!=''"> 
+		AND path=#{path}
+	</if>
+	 <if test="serviceId!=null and serviceId!=''"> 
+		AND service_id=#{serviceId}
+	</if>
+	 <if test="url!=null and url!=''"> 
+		AND url=#{url}
+	</if>
+	 <if test="retryable!=null"> 
+		AND retryable=#{retryable}
+	</if>
+	 <if test="enabled!=null"> 
+		AND enabled=#{enabled}
+	</if>
+	 <if test="stripPrefix!=null and stripPrefix!=''"> 
+		AND strip_prefix=#{stripPrefix}
+	</if>
+	 <if test="apiName!=null and apiName!=''"> 
+		AND api_name=#{apiName}
+	</if>
+	 <if test="createOn!=null and createOn!=''"> 
+		AND create_on=#{createOn}
+	</if>
+	 <if test="deleteMark!=null"> 
+		AND delete_mark=#{deleteMark}
+	</if>
+	 <if test="status!=null"> 
+		AND status=#{status}
+	</if>
+</where>
+</select>
+</mapper>

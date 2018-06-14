@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" > 
+<mapper namespace="com.hna.dbp.dao.mapper.PluginsMapper">
+<resultMap id="plugins" type="com.hna.dbp.dao.entity.Plugins">
+	<result property="id" column="id"/>
+	<result property="name" column="name"/>
+	<result property="apiId" column="api_id"/>
+	<result property="consumerId" column="consumer_id"/>
+	<result property="config" column="config"/>
+	<result property="enabled" column="enabled"/>
+	<result property="createOn" column="create_on"/>
+	<result property="deleteMark" column="delete_mark"/>
+</resultMap>
+<insert id="insertPlugins" parameterType="com.hna.dbp.dao.entity.Plugins">
+insert into plugins
+(	id,
+	name,
+	api_id,
+	consumer_id,
+	config,
+	enabled,
+	create_on,
+	delete_mark
+)values(
+	#{id},
+	#{name},
+	#{apiId},
+	#{consumerId},
+	#{config},
+	#{enabled},
+	#{createOn},
+	#{deleteMark}
+)
+</insert>
+<delete id="deletePluginsById">
+	delete from plugins
+	where id=#{id}
+</delete>
+<update id="markPluginsAsDeleted">
+	update plugins set delete_mark = 1 
+	where id=#{id}
+</update>
+<select id="findPluginsById" resultMap="plugins">
+	select * from plugins
+	where id=#{id}
+</select>
+<select id="findPluginsList" resultMap="plugins">
+	select * from plugins
+</select>
+<update id="updatePlugins" parameterType="com.hna.dbp.dao.entity.Plugins">
+update plugins
+<set>
+	id=#{id},
+	name=#{name},
+	api_id=#{apiId},
+	consumer_id=#{consumerId},
+	config=#{config},
+	enabled=#{enabled},
+	create_on=#{createOn},
+	delete_mark=#{deleteMark}
+</set>
+<where>	
+id=#{id}	
+</where>	
+</update>
+<update id="updateSensitivePlugins" parameterType="com.hna.dbp.dao.entity.Plugins">
+update plugins
+<set>
+	<if test="id!=null"> 
+		id=#{id},
+	</if>
+	<if test="name!=null"> 
+		name=#{name},
+	</if>
+	<if test="apiId!=null"> 
+		api_id=#{apiId},
+	</if>
+	<if test="consumerId!=null"> 
+		consumer_id=#{consumerId},
+	</if>
+	<if test="config!=null"> 
+		config=#{config},
+	</if>
+	<if test="enabled!=null"> 
+		enabled=#{enabled},
+	</if>
+	<if test="createOn!=null"> 
+		create_on=#{createOn},
+	</if>
+	<if test="deleteMark!=null"> 
+		delete_mark=#{deleteMark}
+	</if>
+</set>
+<where>	
+id=#{id}	
+</where>	
+</update>
+<delete id="deletePluginsListByIds" parameterType ="java.lang.String">
+	delete from plugins
+	where id in
+	<foreach item="idItem" collection="array" open="(" separator="," close=")">#{idItem}</foreach>
+</delete>
+<update id="markPluginsArrayAsDeleted" parameterType ="java.lang.String">
+	update plugins set delete_mark = 1 
+	where id in
+	<foreach item="idItem" collection="array" open="(" separator="," close=")">#{idItem}</foreach>
+</update>
+<insert id="insertPluginsList" parameterType="java.util.List">
+insert into plugins
+(	id,
+	name,
+	api_id,
+	consumer_id,
+	config,
+	enabled,
+	create_on,
+	delete_mark
+)values<foreach collection="list" item="item" index= "index" separator="," >
+(	#{item.id},
+	#{item.name},
+	#{item.apiId},
+	#{item.consumerId},
+	#{item.config},
+	#{item.enabled},
+	#{item.createOn},
+	#{item.deleteMark}
+)</foreach>
+</insert>
+<update id="updatePluginsList" parameterType="java.util.List">
+<foreach collection="list" item="item" index= "index" separator=";" >
+update plugins
+set
+	id=#{item.id},
+	name=#{item.name},
+	api_id=#{item.apiId},
+	consumer_id=#{item.consumerId},
+	config=#{item.config},
+	enabled=#{item.enabled},
+	create_on=#{item.createOn},
+	delete_mark=#{item.deleteMark}
+
+where	
+id=#{item.id}	
+</foreach>
+</update>
+<select id="findPluginsQuery" resultMap="plugins">
+	select * from plugins
+	<where>
+	 <if test="id!=null and id!=''"> 
+		AND id=#{id}
+	</if>
+	 <if test="name!=null and name!=''"> 
+		AND name=#{name}
+	</if>
+	 <if test="apiId!=null and apiId!=''"> 
+		AND api_id=#{apiId}
+	</if>
+	 <if test="consumerId!=null and consumerId!=''"> 
+		AND consumer_id=#{consumerId}
+	</if>
+	 <if test="config!=null and config!=''"> 
+		AND config=#{config}
+	</if>
+	 <if test="enabled!=null "> 
+		AND enabled=#{enabled}
+	</if>
+	 <if test="createOn!=null and createOn!=''"> 
+		AND create_on=#{createOn}
+	</if>
+	 <if test="deleteMark!=null "> 
+		AND delete_mark=#{deleteMark}
+	</if>
+</where>
+	</select>
+<select id="findPluginsQueryPage" resultMap="plugins">
+	select * from plugins
+	<where>
+	 <if test="obj.id!=null and obj.id!=''"> 
+		AND id=#{obj.id}
+	</if>
+	 <if test="obj.name!=null and obj.name!=''"> 
+		AND name=#{obj.name}
+	</if>
+	 <if test="obj.apiId!=null and obj.apiId!=''"> 
+		AND api_id=#{obj.apiId}
+	</if>
+	 <if test="obj.consumerId!=null and obj.consumerId!=''"> 
+		AND consumer_id=#{obj.consumerId}
+	</if>
+	 <if test="obj.config!=null and obj.config!=''"> 
+		AND config=#{obj.config}
+	</if>
+	 <if test="obj.enabled!=null "> 
+		AND enabled=#{obj.enabled}
+	</if>
+	 <if test="obj.createOn!=null and obj.createOn!=''"> 
+		AND create_on=#{obj.createOn}
+	</if>
+	 <if test="obj.deleteMark!=null "> 
+		AND delete_mark=#{obj.deleteMark}
+	</if>
+</where>
+		limit #{startIndex},#{limit}
+
+</select>
+
+	<select id="findPluginsQueryPageNew" resultMap="plugins">
+		select * from plugins limit #{startIndex},#{limit}
+	</select>
+<select id="findCountPluginsQuery" resultType="java.lang.Integer">
+	select count(*) from plugins
+	<where>
+	 <if test="id!=null and id!=''"> 
+		AND id=#{id}
+	</if>
+	 <if test="name!=null and name!=''"> 
+		AND name=#{name}
+	</if>
+	 <if test="apiId!=null and apiId!=''"> 
+		AND api_id=#{apiId}
+	</if>
+	 <if test="consumerId!=null and consumerId!=''"> 
+		AND consumer_id=#{consumerId}
+	</if>
+	 <if test="config!=null and config!=''"> 
+		AND config=#{config}
+	</if>
+	 <if test="enabled!=null"> 
+		AND enabled=#{enabled}
+	</if>
+	 <if test="createOn!=null and createOn!=''"> 
+		AND create_on=#{createOn}
+	</if>
+	 <if test="deleteMark!=null"> 
+		AND delete_mark=#{deleteMark}
+	</if>
+</where>
+</select>
+</mapper>
